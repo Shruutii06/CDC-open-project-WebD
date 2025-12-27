@@ -5,33 +5,54 @@ import { getProductById } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
+/* =======================
+   Types
+======================= */
+
+type Sale = {
+  _id: string;
+  date: string;
+  quantity: number;
+  priceAtSale: number;
+};
+
+type Product = {
+  _id: string;
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  unitsSold?: number;
+  images?: string[];
+  sales?: Sale[];
+};
+
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 export default async function ProductDetailsPage({ params }: Props) {
-  // ✅ REQUIRED in Next.js 15+
   const { id } = await params;
 
-  const product = await getProductById(id);
+  const product = (await getProductById(id)) as Product;
+
   const revenue = (product.unitsSold ?? 0) * product.price;
 
   return (
-    <div className="min-h-screen  px-4 py-8">
+    <div className="min-h-screen px-4 py-8">
       <div
-  className="absolute inset-0 -z-10 h-full w-full"
-  style={{
-    backgroundColor: "#D1D5DB", // bg-gray-300
-    backgroundImage: `
-      linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
-    `,
-    backgroundSize: "10rem 8rem",
-  }}
-></div>
+        className="absolute inset-0 -z-10 h-full w-full"
+        style={{
+          backgroundColor: "#D1D5DB",
+          backgroundImage: `
+            linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
+          `,
+          backgroundSize: "10rem 8rem",
+        }}
+      />
 
       <div className="mx-auto max-w-5xl bg-gray-100 border border-zinc-600 rounded-xl shadow-sm p-6">
-
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-neutral-900">
@@ -47,8 +68,7 @@ export default async function ProductDetailsPage({ params }: Props) {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-          {/* Left: Image + Update */}
+          {/* Left */}
           <div className="space-y-4">
             <div className="w-full h-64 relative border border-zinc-700 rounded-lg overflow-hidden">
               <Image
@@ -66,7 +86,7 @@ export default async function ProductDetailsPage({ params }: Props) {
             />
           </div>
 
-          {/* Right: Details */}
+          {/* Right */}
           <div className="bg-gray-300 border border-zinc-700 rounded-lg p-5 py-12 flex flex-col justify-between">
             <div className="space-y-3 text-neutral-800 text-xl">
               <p>
@@ -104,7 +124,7 @@ export default async function ProductDetailsPage({ params }: Props) {
                 </thead>
                 <tbody>
                   {product.sales?.length ? (
-                    product.sales.map((sale) => (
+                    product.sales.map((sale: Sale) => (
                       <tr
                         key={sale._id}
                         className="border-t border-zinc-700 text-center"
