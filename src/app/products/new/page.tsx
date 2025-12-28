@@ -39,7 +39,7 @@ export default function NewProductPage() {
     trigger,
     formState: { errors },
   } = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as any,
     defaultValues: { price: 0, stock: 0 },
   });
 
