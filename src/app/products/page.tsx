@@ -5,20 +5,16 @@ import { getProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
-  const params = await searchParams;
-  const products = await getProducts(); // already plain objects
+export default async function ProductsPage() {
+  const products = await getProducts(); // plain objects
 
-  const PAGE_SIZE = 5;
-  const page = Math.max(1, Number(params.page) || 1);
-  const totalPages = Math.ceil(products.length / PAGE_SIZE);
-
-  const startIndex = (page - 1) * PAGE_SIZE;
-  const paginatedProducts = products.slice(startIndex, startIndex + PAGE_SIZE);
+  const categories = Array.from(
+    new Set(
+      products
+        .map((p) => p.category?.trim())
+        .filter(Boolean)
+    )
+  ).sort();
 
   return (
     <div className="p-6 bg-gray-300 min-h-screen">
@@ -28,7 +24,7 @@ export default async function ProductsPage({
         <div className="flex items-center gap-3">
           <Link
             href="/products/new"
-            className="px-4 py-2 text-md  bg-gray-400 text-neutral-900 rounded-md hover:bg-gray-200 transition"
+            className="px-4 py-2 text-md bg-gray-400 text-neutral-900 rounded-md hover:bg-gray-200 transition"
           >
             Add Product
           </Link>
@@ -37,35 +33,16 @@ export default async function ProductsPage({
       </div>
 
       {/* ===== Products Table ===== */}
-      <ProductTable products={paginatedProducts} />
+      <ProductTable products={products} categories={categories} />
 
-      {/* ===== Pagination ===== */}
-      <div className="relative mt-6 flex items-center">
+      {/* ===== Back Link ===== */}
+      <div className="mt-6">
         <Link
           href="/"
-          className="absolute left-0 text-sm font-semibold text-neutral-600 hover:text-neutral-500"
+          className="text-sm font-semibold text-neutral-600 hover:text-neutral-500"
         >
           ← Back to Dashboard
         </Link>
-
-        <div className="mx-auto flex gap-2">
-          {Array.from({ length: totalPages }).map((_, i) => {
-            const pageNum = i + 1;
-            return (
-              <Link
-                key={pageNum}
-                href={`/products?page=${pageNum}`}
-                className={`px-4 py-2 rounded-md border transition-all duration-200 ${
-                  page === pageNum
-                    ? "bg-gray-200 text-neutral-800 border-zinc-400 shadow-sm"
-                    : "bg-gray-600 text-neutral-100 border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 hover:-translate-y-0.5 hover:shadow-md"
-                }`}
-              >
-                {pageNum}
-              </Link>
-            );
-          })}
-        </div>
       </div>
     </div>
   );

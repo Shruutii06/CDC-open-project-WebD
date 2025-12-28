@@ -74,18 +74,22 @@ export default function EditProductPage() {
     return <p className="p-6 text-gray-500">Loading...</p>;
 
   return (
+    <div className="relative min-h-screen">
+    {/* Background */}
+    <div
+      className="absolute inset-0 -z-10"
+      style={{
+        backgroundColor: "#D1D5DB", // bg-gray-300
+        backgroundImage: `
+          linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
+        `,
+        backgroundSize: "10rem 8rem",
+      }}
+    />
+
     <div className="min-h-screen  px-6 py-12">
-      <div
-  className="absolute inset-0 -z-10 h-full w-full"
-  style={{
-    backgroundColor: "#D1D5DB", // bg-gray-300
-    backgroundImage: `
-      linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
-    `,
-    backgroundSize: "10rem 8rem",
-  }}
-></div>
+      
 
       <div className="mx-auto max-w-2xl bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 mb-8">
@@ -178,6 +182,7 @@ export default function EditProductPage() {
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 }
