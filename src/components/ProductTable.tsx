@@ -20,9 +20,7 @@ type SortOption =
   | "price-asc"
   | "price-desc"
   | "stock-asc"
-  | "stock-desc"
-  | "sold-asc"
-  | "sold-desc";
+  | "stock-desc";
 
 const PAGE_SIZE = 5;
 
@@ -87,12 +85,7 @@ export default function ProductTable({ products }: { products: Product[] }) {
       case "stock-desc":
         result.sort((a, b) => b.stock - a.stock);
         break;
-      case "sold-asc":
-        result.sort((a, b) => (a.unitsSold ?? 0) - (b.unitsSold ?? 0));
-        break;
-      case "sold-desc":
-        result.sort((a, b) => (b.unitsSold ?? 0) - (a.unitsSold ?? 0));
-        break;
+      
     }
 
     return result;
@@ -144,9 +137,9 @@ export default function ProductTable({ products }: { products: Product[] }) {
           <option value="">Sort By</option>
           <option value="price-asc">Price ↑</option>
           <option value="price-desc">Price ↓</option>
+          <option value="stock-asc">Stock ↑</option>
           <option value="stock-desc">Stock ↓</option>
-          <option value="sold-desc">Units Sold ↓</option>
-          <option value="sold-asc">Units Sold ↑</option>
+          
         </select>
       </div>
 
