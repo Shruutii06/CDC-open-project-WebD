@@ -48,13 +48,13 @@ export default async function DashboardPage() {
       <div className="flex gap-4">
         <Link
           href="/products"
-          className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition"
+          className="bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-400 transition"
         >
           Manage Products
         </Link>
         <Link
           href="/analytics"
-          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-400 transition"
+          className="bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-400 transition"
         >
           View Analytics
         </Link>
