@@ -8,13 +8,13 @@ export const dynamic = "force-dynamic";
 export default async function ProductsPage() {
   const products = await getProducts(); // plain objects
 
-  const categories = Array.from(
-    new Set(
-      products
-        .map((p) => p.category?.trim())
-        .filter(Boolean)
-    )
-  ).sort();
+  // const categories = Array.from(
+  //   new Set(
+  //     products
+  //       .map((p) => p.category?.trim())
+  //       .filter(Boolean)
+  //   )
+  // ).sort();
 
   return (
     <div className="p-6 bg-gray-300 min-h-screen">
@@ -33,7 +33,7 @@ export default async function ProductsPage() {
       </div>
 
       {/* ===== Products Table ===== */}
-      <ProductTable products={products} categories={categories} />
+      <ProductTable products={products}  />
 
       {/* ===== Back Link ===== */}
       <div className="mt-6">
