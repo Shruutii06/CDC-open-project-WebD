@@ -26,8 +26,6 @@ const productFormSchema = z.object({
     .refine((v) => !isNaN(v), "Stock is required"),
 });
 
-
-
 type ProductFormValues = z.infer<typeof productFormSchema>;
 
 export default function NewProductPage() {
@@ -61,16 +59,16 @@ export default function NewProductPage() {
   return (
     <div className="min-h-screen  px-6 py-12">
       <div
-  className="absolute inset-0 -z-10 h-full w-full"
-  style={{
-    backgroundColor: "#D1D5DB", // bg-gray-300
-    backgroundImage: `
-      linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
-    `,
-    backgroundSize: "10rem 8rem",
-  }}
-></div>
+        className="absolute inset-0 -z-10 h-full w-full"
+        style={{
+          backgroundColor: "#D1D5DB", // bg-gray-300
+          backgroundImage: `
+            linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
+          `,
+          backgroundSize: "10rem 8rem",
+        }}
+      ></div>
 
       <div className="mx-auto max-w-2xl bg-gray-100 border border-zinc-700 rounded-xl p-8 shadow-sm">
         <h1 className="text-2xl font-bold text-neutral-900 mb-8">
@@ -146,7 +144,7 @@ export default function NewProductPage() {
                 <input
                   type="number"
                   step="0.01"
-                  {...register("price", { valueAsNumber: true })}
+                  {...register("price")}
                   className="w-full px-3 py-2 rounded-md bg-gray-300 border border-zinc-700 text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-600 transition"
                 />
                 {errors.price && (
@@ -179,7 +177,7 @@ export default function NewProductPage() {
                 </label>
                 <input
                   type="number"
-                  {...register("stock", { valueAsNumber: true })}
+                  {...register("stock")}
                   className="w-full px-3 py-2 rounded-md bg-gray-300 border border-zinc-700 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-600 transition"
                 />
                 {errors.stock && (
@@ -233,7 +231,7 @@ export default function NewProductPage() {
 
                 <button
                   type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transition"
                 >
                   Create Product
                 </button>
