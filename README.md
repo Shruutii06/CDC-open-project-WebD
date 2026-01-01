@@ -62,3 +62,6 @@ src/
 
 ## Deployment
 https://cdc-open-project-yhills.vercel.app
+## Dummy admin credentials
+email id :- admin@example.com
+password :- admin123
