@@ -1,31 +1,30 @@
 import { connectDB } from "@/lib/db";
 import Product from "@/lib/models/Product";
-import { Types } from "mongoose";
+import { cache } from "react";
 
-export async function getProducts() {
+/* ---------------- ALL PRODUCTS ---------------- */
+export const getProducts = cache(async () => {
   await connectDB();
 
   const products = await Product.find().lean();
 
-  return products.map((p) => ({
+  return products.map((p: any) => ({
     ...p,
-    _id: p._id.toString(),           // ✅ FIX
+    _id: p._id.toString(),
     createdAt: p.createdAt?.toISOString(),
     updatedAt: p.updatedAt?.toISOString(),
     sales: p.sales?.map((s: any) => ({
       ...s,
-      _id: s._id.toString(),         // ✅ FIX
+      _id: s._id.toString(),
       date: s.date?.toISOString(),
     })),
   }));
-}
+});
 
-
-export async function getProductById(id: string) {
-  console.log("ID RECEIVED IN LIB →", id);
-
+/* ---------------- SINGLE PRODUCT ---------------- */
+export const getProductById = cache(async (id: string) => {
   if (!id || typeof id !== "string") {
-    throw new Error("Invalid product ID (not a string)");
+    throw new Error("Invalid product ID");
   }
 
   await connectDB();
@@ -37,8 +36,10 @@ export async function getProductById(id: string) {
     ...product,
     _id: product._id.toString(),
   };
-}
-export async function getAllProductsForAnalytics() {
+});
+
+/* ---------------- ANALYTICS ---------------- */
+export const getAllProductsForAnalytics = cache(async () => {
   await connectDB();
 
   const products = await Product.find().lean();
@@ -50,8 +51,6 @@ export async function getAllProductsForAnalytics() {
     price: p.price,
     stock: p.stock,
     unitsSold: p.unitsSold ?? 0,
-    createdAt: p.createdAt?.toISOString(), // ✅ REQUIRED
+    createdAt: p.createdAt?.toISOString(),
   }));
-}
-
-
+});

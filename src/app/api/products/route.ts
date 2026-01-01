@@ -1,45 +1,57 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Product from "@/lib/models/Product";
 import { connectDB } from "@/lib/db";
 import { productSchema } from "@/schemas/productSchema";
+import { verifyToken } from "@/lib/auth";
+
+/* ---------- AUTH HELPER ---------- */
+function requireAuth(req: NextRequest) {
+  const token = req.cookies.get("admin_token")?.value;
+  if (!token) throw new Error("NO_TOKEN");
+  verifyToken(token);
+}
 
 /* ---------------- GET ---------------- */
-export async function GET(req: Request) {
-  await connectDB();
+export async function GET(req: NextRequest) {
+  try {
+    requireAuth(req);
+    await connectDB();
 
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+    const { searchParams } = req.nextUrl;
+    const id = searchParams.get("id");
 
-  if (id) {
-    const product = await Product.findById(id).lean();
-    if (!product) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (id) {
+      const product = await Product.findById(id).lean();
+      if (!product) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      }
+      return NextResponse.json(product);
     }
-    return NextResponse.json(product);
+
+    const products = await Product.find().lean();
+
+    const safeProducts = products.map((product: any) => ({
+      ...product,
+      _id: product._id.toString(),
+      createdAt: product.createdAt?.toISOString(),
+      updatedAt: product.updatedAt?.toISOString(),
+      sales: product.sales.map((sale: any) => ({
+        ...sale,
+        _id: sale._id.toString(),
+        date: new Date(sale.date).toISOString(),
+      })),
+    }));
+
+    return NextResponse.json(safeProducts);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const products = await Product.find().lean();
-
-const safeProducts = products.map((product: { _id: { toString: () => any; }; createdAt: { toISOString: () => any; }; updatedAt: { toISOString: () => any; }; sales: any[]; }) => ({
-  ...product,
-  _id: product._id.toString(),
-  createdAt: product.createdAt?.toISOString(),
-  updatedAt: product.updatedAt?.toISOString(),
-
-  sales: product.sales.map((sale) => ({
-    ...sale,
-    _id: sale._id.toString(),
-    date: new Date(sale.date).toISOString(),
-  })),
-}));
-
-return NextResponse.json(safeProducts);
-
 }
 
 /* ---------------- POST ---------------- */
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    requireAuth(req);
     await connectDB();
 
     const body = await req.json();
@@ -56,16 +68,17 @@ export async function POST(req: Request) {
     return NextResponse.json(product, { status: 201 });
   } catch (err) {
     console.error("CREATE PRODUCT ERROR:", err);
-    return NextResponse.json({ error: "Create failed" }, { status: 500 });
+    return NextResponse.json({ error: "Unauthorized or invalid data" }, { status: 401 });
   }
 }
 
 /* ---------------- PUT ---------------- */
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
+    requireAuth(req);
     await connectDB();
-    const body = await req.json();
 
+    const body = await req.json();
     if (!body.id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
@@ -88,21 +101,26 @@ export async function PUT(req: Request) {
     return NextResponse.json(updated);
   } catch (err) {
     console.error("UPDATE PRODUCT ERROR:", err);
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
+    return NextResponse.json({ error: "Unauthorized or update failed" }, { status: 401 });
   }
 }
 
 /* ---------------- DELETE ---------------- */
-export async function DELETE(req: Request) {
-  await connectDB();
+export async function DELETE(req: NextRequest) {
+  try {
+    requireAuth(req);
+    await connectDB();
 
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+    const { searchParams } = req.nextUrl;
+    const id = searchParams.get("id");
 
-  if (!id) {
-    return NextResponse.json({ error: "ID required" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: "ID required" }, { status: 400 });
+    }
+
+    await Product.findByIdAndDelete(id);
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  await Product.findByIdAndDelete(id);
-  return NextResponse.json({ success: true });
 }

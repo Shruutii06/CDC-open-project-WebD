@@ -2,7 +2,7 @@ import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import { getProducts } from "@/lib/products";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const products = await getProducts();
