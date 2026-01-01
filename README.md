@@ -54,7 +54,7 @@ src/
 │   ├── analytics/
 │   ├── products/
 │   ├── page.tsx        # Dashboard
-│   └── proxy.ts        # Request interceptor (formerly middleware)
+│   └── proxy.ts        # Request interceptor 
 ├── components/
 ├── lib/
 └── styles/
