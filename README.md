@@ -43,19 +43,22 @@ Runtime: Node.js
 Bundler: Turbopack
 
 ## Project Structure
+
+```text
 src/
 ├── app/
-│ ├── api/
-│ │ ├── admin/
-│ │ │ └── login/
-│ │ └── products/
-│ ├── analytics/
-│ ├── products/
-│ ├── page.tsx # Dashboard
-│ └── proxy.ts # Request interceptor (formerly middleware)
+│   ├── api/
+│   │   ├── admin/
+│   │   │   └── login/
+│   │   └── products/
+│   ├── analytics/
+│   ├── products/
+│   ├── page.tsx        # Dashboard
+│   └── proxy.ts        # Request interceptor (formerly middleware)
 ├── components/
 ├── lib/
 └── styles/
+```
 
 ## Deployment
 https://cdc-open-project-yhills.vercel.app
