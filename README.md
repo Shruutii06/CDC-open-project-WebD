@@ -45,14 +45,14 @@ Bundler: Turbopack
 ## Project Structure
 src/
 ├── app/
-│   ├── api/
-│   │   ├── admin/
-│   │   │   └── login/
-│   │   └── products/
-│   ├── analytics/
-│   ├── products/
-│   ├── page.tsx        # Dashboard
-│   └── proxy.ts        # Request interceptor (formerly middleware)
+│ ├── api/
+│ │ ├── admin/
+│ │ │ └── login/
+│ │ └── products/
+│ ├── analytics/
+│ ├── products/
+│ ├── page.tsx # Dashboard
+│ └── proxy.ts # Request interceptor (formerly middleware)
 ├── components/
 ├── lib/
 └── styles/
