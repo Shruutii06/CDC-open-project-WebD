@@ -36,7 +36,7 @@ export default function ProductTable({ products }: { products: Product[] }) {
   async function handleDelete(e: React.MouseEvent, productId: string) {
     e.stopPropagation();
 
-    const confirmed = confirm("Are you sure?");
+    const confirmed = confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;
 
     const res = await fetch(`/api/products?id=${productId}`, {
