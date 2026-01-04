@@ -3,6 +3,7 @@ import Product from "@/lib/models/Product";
 import { connectDB } from "@/lib/db";
 import { productSchema } from "@/schemas/productSchema";
 import { verifyToken } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 /* ---------- AUTH HELPER ---------- */
 function requireAuth(req: NextRequest) {
@@ -35,11 +36,11 @@ export async function GET(req: NextRequest) {
       _id: product._id.toString(),
       createdAt: product.createdAt?.toISOString(),
       updatedAt: product.updatedAt?.toISOString(),
-      sales: product.sales.map((sale: any) => ({
+      sales: product.sales?.map((sale: any) => ({
         ...sale,
         _id: sale._id.toString(),
         date: new Date(sale.date).toISOString(),
-      })),
+      })) ?? [],
     }));
 
     return NextResponse.json(safeProducts);
@@ -48,7 +49,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-/* ---------------- POST ---------------- */
+/* ---------------- POST (CREATE) ---------------- */
 export async function POST(req: NextRequest) {
   try {
     requireAuth(req);
@@ -65,14 +66,21 @@ export async function POST(req: NextRequest) {
       sales: [],
     });
 
+    // ✅ revalidate AFTER mutation
+    revalidatePath("/");
+    revalidatePath("/products");
+
     return NextResponse.json(product, { status: 201 });
   } catch (err) {
     console.error("CREATE PRODUCT ERROR:", err);
-    return NextResponse.json({ error: "Unauthorized or invalid data" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized or invalid data" },
+      { status: 401 }
+    );
   }
 }
 
-/* ---------------- PUT ---------------- */
+/* ---------------- PUT (UPDATE) ---------------- */
 export async function PUT(req: NextRequest) {
   try {
     requireAuth(req);
@@ -98,10 +106,17 @@ export async function PUT(req: NextRequest) {
       { new: true }
     ).lean();
 
+    // ✅ revalidate after update
+    revalidatePath("/");
+    revalidatePath("/products");
+
     return NextResponse.json(updated);
   } catch (err) {
     console.error("UPDATE PRODUCT ERROR:", err);
-    return NextResponse.json({ error: "Unauthorized or update failed" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized or update failed" },
+      { status: 401 }
+    );
   }
 }
 
@@ -119,8 +134,14 @@ export async function DELETE(req: NextRequest) {
     }
 
     await Product.findByIdAndDelete(id);
+
+    // ✅ revalidate after delete
+    revalidatePath("/");
+    revalidatePath("/products");
+
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 }
+
