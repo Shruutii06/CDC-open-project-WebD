@@ -6,6 +6,13 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import ImageUpload from "@/components/ImageUpload";
 import Link from "next/link";
+const CATEGORY_OPTIONS = [
+  { value: "electronic", label: "Electronic" },
+  { value: "clothing", label: "Clothing" },
+  { value: "stationary", label: "Stationary" },
+  { value: "bath essential", label: "Bath Essential" },
+  { value: "beauty", label: "Beauty" },
+];
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -70,119 +77,124 @@ export default function EditProductPage() {
     }
   }
 
-  if (loading)
-    return <p className="p-6 text-gray-500">Loading...</p>;
+  if (loading) return <p className="p-6 text-gray-500">Loading...</p>;
 
   return (
     <div className="relative min-h-screen">
-    {/* Background */}
-    <div
-      className="absolute inset-0 -z-10"
-      style={{
-        backgroundColor: "#D1D5DB", // bg-gray-300
-        backgroundImage: `
+      {/* Background */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          backgroundColor: "#D1D5DB", // bg-gray-300
+          backgroundImage: `
           linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
           linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
         `,
-        backgroundSize: "10rem 8rem",
-      }}
-    />
+          backgroundSize: "10rem 8rem",
+        }}
+      />
 
-    <div className="min-h-screen  px-6 py-12">
-      
+      <div className="min-h-screen  px-6 py-12">
+        <div className="mx-auto max-w-2xl bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
+          <h1 className="text-2xl font-bold text-gray-900 mb-8">
+            Edit Product
+          </h1>
 
-      <div className="mx-auto max-w-2xl bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">
-          Edit Product
-        </h1>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Product Name */}
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
-              Product Name
-            </label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              placeholder="Enter product name"
-            />
-          </div>
-
-          {/* Category */}
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <input
-              type="text"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              placeholder="Enter category"
-            />
-          </div>
-
-          {/* Price */}
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
-              Price (₹)
-            </label>
-            <input
-              type="number"
-              value={form.price}
-              onChange={(e) =>
-                setForm({ ...form, price: Number(e.target.value) })
-              }
-              className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-
-          {/* Stock */}
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
-              Stock Quantity
-            </label>
-            <input
-              type="number"
-              value={form.stock}
-              onChange={(e) =>
-                setForm({ ...form, stock: Number(e.target.value) })
-              }
-              className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Product Images
-            </label>
-            <div className="rounded-md border border-gray-300 bg-gray-50 p-3">
-              <ImageUpload value={images} onChange={setImages} />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Product Name */}
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">
+                Product Name
+              </label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                placeholder="Enter product name"
+              />
             </div>
-          </div>
 
-          {/* Actions */}
-          <div className="flex justify-between">
-            <Link
-              href="/products"
-              className="text-sm text-gray-500 hover:text-gray-700 transition"
-            >
-              ← Back to Products
-            </Link>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transition"
-            >
-              Update Product
-            </button>
-          </div>
-        </form>
+            {/* Category */}
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">
+                Category
+              </label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              >
+                <option value="" disabled>
+                  Select category
+                </option>
+
+                {CATEGORY_OPTIONS.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Price */}
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">
+                Price (₹)
+              </label>
+              <input
+                type="number"
+                value={form.price}
+                onChange={(e) =>
+                  setForm({ ...form, price: Number(e.target.value) })
+                }
+                className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+
+            {/* Stock */}
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">
+                Stock Quantity
+              </label>
+              <input
+                type="number"
+                value={form.stock}
+                onChange={(e) =>
+                  setForm({ ...form, stock: Number(e.target.value) })
+                }
+                className="w-full px-3 py-2 rounded-md bg-gray-100 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Product Images
+              </label>
+              <div className="rounded-md border border-gray-300 bg-gray-50 p-3">
+                <ImageUpload value={images} onChange={setImages} />
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-between">
+              <Link
+                href="/products"
+                className="text-sm text-gray-500 hover:text-gray-700 transition"
+              >
+                ← Back to Products
+              </Link>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+              >
+                Update Product
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 }
