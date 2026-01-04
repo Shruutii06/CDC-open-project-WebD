@@ -4,6 +4,20 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+/* ================= CONSTANTS ================= */
+
+const PAGE_SIZE = 5;
+
+const CATEGORY_OPTIONS = [
+  { value: "electronic", label: "Electronic" },
+  { value: "clothing", label: "Clothing" },
+  { value: "stationary", label: "Stationary" },
+  { value: "bath essential", label: "Bath Essential" },
+  { value: "beauty", label: "Beauty" },
+];
+
+/* ================= TYPES ================= */
+
 interface Product {
   _id: string;
   name: string;
@@ -22,7 +36,7 @@ type SortOption =
   | "stock-asc"
   | "stock-desc";
 
-const PAGE_SIZE = 5;
+/* ================= COMPONENT ================= */
 
 export default function ProductTable({ products }: { products: Product[] }) {
   const router = useRouter();
@@ -32,7 +46,8 @@ export default function ProductTable({ products }: { products: Product[] }) {
   const [sort, setSort] = useState<SortOption>("");
   const [page, setPage] = useState(1);
 
-  /* ===== DELETE ===== */
+  /* ================= DELETE ================= */
+
   async function handleDelete(e: React.MouseEvent, productId: string) {
     e.stopPropagation();
 
@@ -51,25 +66,19 @@ export default function ProductTable({ products }: { products: Product[] }) {
     router.refresh();
   }
 
-  /* ===== CATEGORIES ===== */
-  const categories = useMemo(() => {
-    return Array.from(
-      new Set(products.map((p) => p.category?.trim()).filter(Boolean))
-    );
-  }, [products]);
+  /* ================= FILTER + SORT ================= */
 
-  /* ===== FILTER + SORT (FULL DATASET) ===== */
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
     if (search.trim()) {
       result = result.filter((p) =>
-        p.name?.toLowerCase().includes(search.toLowerCase())
+        p.name.toLowerCase().includes(search.toLowerCase())
       );
     }
 
     if (category !== "all") {
-      result = result.filter((p) => p.category?.trim() === category);
+      result = result.filter((p) => p.category === category);
     }
 
     switch (sort) {
@@ -85,24 +94,27 @@ export default function ProductTable({ products }: { products: Product[] }) {
       case "stock-desc":
         result.sort((a, b) => b.stock - a.stock);
         break;
-      
     }
 
     return result;
   }, [products, search, category, sort]);
 
-  /* ===== RESET PAGE ON FILTER CHANGE ===== */
+  /* ================= RESET PAGE ================= */
+
   useEffect(() => {
     setPage(1);
   }, [search, category, sort]);
 
-  /* ===== PAGINATION ===== */
+  /* ================= PAGINATION ================= */
+
   const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
 
   const paginatedProducts = filteredProducts.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE
   );
+
+  /* ================= RENDER ================= */
 
   return (
     <div className="bg-neutral-100 border border-zinc-400 p-6 rounded-xl shadow-sm">
@@ -122,9 +134,9 @@ export default function ProductTable({ products }: { products: Product[] }) {
           className="bg-gray-400 border border-zinc-600 text-neutral-800 rounded-md px-3 py-2"
         >
           <option value="all">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
+          {CATEGORY_OPTIONS.map((cat) => (
+            <option key={cat.value} value={cat.value}>
+              {cat.label}
             </option>
           ))}
         </select>
@@ -139,7 +151,6 @@ export default function ProductTable({ products }: { products: Product[] }) {
           <option value="price-desc">Price ↓</option>
           <option value="stock-asc">Stock ↑</option>
           <option value="stock-desc">Stock ↓</option>
-          
         </select>
       </div>
 
@@ -176,7 +187,7 @@ export default function ProductTable({ products }: { products: Product[] }) {
                     />
                     <div>
                       <p className="font-medium">{product.name}</p>
-                      <p className="text-xs text-neutral-600">
+                      <p className="text-xs text-neutral-600 capitalize">
                         {product.category}
                       </p>
                     </div>
@@ -184,7 +195,9 @@ export default function ProductTable({ products }: { products: Product[] }) {
 
                   <td className="p-3 text-center">₹{product.price}</td>
                   <td className="p-3 text-center">{product.stock}</td>
-                  <td className="p-3 text-center">{product.unitsSold ?? 0}</td>
+                  <td className="p-3 text-center">
+                    {product.unitsSold ?? 0}
+                  </td>
                   <td className="p-3 text-center">
                     ₹{revenue.toLocaleString("en-IN")}
                   </td>
@@ -217,6 +230,17 @@ export default function ProductTable({ products }: { products: Product[] }) {
                 </tr>
               );
             })}
+
+            {paginatedProducts.length === 0 && (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="p-6 text-center text-neutral-600"
+                >
+                  No products found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -230,12 +254,11 @@ export default function ProductTable({ products }: { products: Product[] }) {
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`px-3 py-1 rounded-md border transition-transform duration-200 
-  ${
-    p === page
-      ? "bg-gray-300 text-neutral-900 border-zinc-400 scale-105 shadow-sm"
-      : "bg-gray-600 text-white border-zinc-700 hover:bg-gray-500 hover:scale-105"
-  }`}
+                className={`px-3 py-1 rounded-md border transition-transform duration-200 ${
+                  p === page
+                    ? "bg-gray-300 text-neutral-900 border-zinc-400 scale-105 shadow-sm"
+                    : "bg-gray-600 text-white border-zinc-700 hover:bg-gray-500 hover:scale-105"
+                }`}
               >
                 {p}
               </button>
