@@ -12,6 +12,14 @@ import ImageUpload from "@/components/ImageUpload";
 /* -------------------- */
 /* Zod Schema */
 /* -------------------- */
+const CATEGORY_VALUES = [
+  "electronic",
+  "clothing",
+  "stationary",
+  "bath essential",
+  "beauty",
+] as const;
+
 const productFormSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Description is required"),
@@ -19,10 +27,10 @@ const productFormSchema = z.object({
     .number()
     .min(0, "Price must be positive")
     .refine((v) => !isNaN(v), "Price is required"),
-  category: z.enum(
-    ["electronic", "clothing", "stationary", "bath essential", "beauty"],
-    { required_error: "Category is required" }
-  ),
+  category: z.enum(CATEGORY_VALUES, {
+  errorMap: () => ({ message: "Category is required" }),
+}),
+
   stock: z.coerce
     .number()
     .min(0, "Stock must be 0 or more")
