@@ -19,7 +19,10 @@ const productFormSchema = z.object({
     .number()
     .min(0, "Price must be positive")
     .refine((v) => !isNaN(v), "Price is required"),
-  category: z.string().min(1, "Category is required"),
+  category: z.enum(
+    ["electronic", "clothing", "stationary", "bath essential", "beauty"],
+    { required_error: "Category is required" }
+  ),
   stock: z.coerce
     .number()
     .min(0, "Stock must be 0 or more")
@@ -158,12 +161,21 @@ export default function NewProductPage() {
                 <label className="block text-sm font-medium mb-1 text-neutral-800">
                   Category
                 </label>
-                <input
-                  type="text"
+                <select
                   {...register("category")}
-                  placeholder="Enter category"
-                  className="w-full px-3 py-2 rounded-md bg-gray-300 border border-zinc-700 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-600 transition placeholder:text-neutral-600"
-                />
+                  defaultValue=""
+                  className="w-full px-3 py-2 rounded-md bg-gray-300 border border-zinc-700 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-600 transition"
+                >
+                  <option value="" disabled>
+                    Select category
+                  </option>
+                  <option value="electronic">Electronic</option>
+                  <option value="clothing">Clothing</option>
+                  <option value="stationary">Stationary</option>
+                  <option value="bath essential">Bath Essential</option>
+                  <option value="beauty">Beauty</option>
+                </select>
+
                 {errors.category && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.category.message}
