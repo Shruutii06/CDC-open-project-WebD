@@ -23,19 +23,26 @@ const CATEGORY_VALUES = [
 const productFormSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Description is required"),
+
   price: z.coerce
     .number()
     .min(0, "Price must be positive")
     .refine((v) => !isNaN(v), "Price is required"),
-  category: z.enum(CATEGORY_VALUES, {
-  errorMap: () => ({ message: "Category is required" }),
-}),
+
+  category: z
+    .string()
+    .min(1, "Category is required")
+    .refine(
+      (val) => CATEGORY_VALUES.includes(val as any),
+      "Invalid category selected"
+    ),
 
   stock: z.coerce
     .number()
     .min(0, "Stock must be 0 or more")
     .refine((v) => !isNaN(v), "Stock is required"),
 });
+
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
 
