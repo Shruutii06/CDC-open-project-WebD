@@ -176,7 +176,7 @@ export default function ProductTable({ products }: { products: Product[] }) {
                 >
                   <td className="p-3 flex items-center gap-3">
                     <img
-                      src={product.images?.[0] || "/profile.jpg"}
+                      src={product.images?.[0] || "/image_1024.png"}
                       className="w-12 h-12 rounded-md border"
                       alt={product.name}
                     />
