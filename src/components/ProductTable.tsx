@@ -29,12 +29,7 @@ interface Product {
   updatedAt: string;
 }
 
-type SortOption =
-  | ""
-  | "price-asc"
-  | "price-desc"
-  | "stock-asc"
-  | "stock-desc";
+type SortOption = "" | "price-asc" | "price-desc" | "stock-asc" | "stock-desc";
 
 /* ================= COMPONENT ================= */
 
@@ -194,10 +189,14 @@ export default function ProductTable({ products }: { products: Product[] }) {
                   </td>
 
                   <td className="p-3 text-center">₹{product.price}</td>
-                  <td className="p-3 text-center">{product.stock}</td>
-                  <td className="p-3 text-center">
-                    {product.unitsSold ?? 0}
+                  <td
+                    className={`p-3 text-center ${
+                      product.stock <= 5 ? "text-red-600 font-bold" : ""
+                    }`}
+                  >
+                    {product.stock}
                   </td>
+                  <td className="p-3 text-center">{product.unitsSold ?? 0}</td>
                   <td className="p-3 text-center">
                     ₹{revenue.toLocaleString("en-IN")}
                   </td>
@@ -233,10 +232,7 @@ export default function ProductTable({ products }: { products: Product[] }) {
 
             {paginatedProducts.length === 0 && (
               <tr>
-                <td
-                  colSpan={7}
-                  className="p-6 text-center text-neutral-600"
-                >
+                <td colSpan={7} className="p-6 text-center text-neutral-600">
                   No products found
                 </td>
               </tr>
@@ -269,3 +265,4 @@ export default function ProductTable({ products }: { products: Product[] }) {
     </div>
   );
 }
+
