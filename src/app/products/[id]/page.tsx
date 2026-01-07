@@ -20,6 +20,7 @@ type Product = {
   _id: string;
   name: string;
   category: string;
+  description: string;
   price: number;
   stock: number;
   unitsSold?: number;
@@ -94,6 +95,10 @@ export default async function ProductDetailsPage({ params }: Props) {
                 {product.category}
               </p>
               <p>
+                <span className="text-neutral-900">Description:</span>{" "}
+                {product.description}
+              </p>
+              <p>
                 <span className="text-neutral-900">Price:</span> ₹{product.price}
               </p>
               <p>
@@ -109,6 +114,7 @@ export default async function ProductDetailsPage({ params }: Props) {
                 <span className="text-neutral-900">Total Revenue:</span>{" "}
                 ₹{revenue.toLocaleString("en-IN")}
               </p>
+              
 
               {/* Sales History */}
               <h3 className="font-semibold mt-6">Sales History</h3>
@@ -175,3 +181,4 @@ export default async function ProductDetailsPage({ params }: Props) {
     </div>
   );
 }
+
