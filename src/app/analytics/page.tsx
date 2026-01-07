@@ -25,7 +25,7 @@ export default async function AnalyticsPage() {
         {/* ===== Header ===== */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <span className="text-xl tracking-wide text-gray-500">Acme Commerce Pvt. Ltd.</span>
+            <span className="text-xl tracking-wide font-medium text-gray-500">YHILLS</span>
             <h1 className="text-3xl font-bold text-gray-900 mt-1">Analytics & Insights</h1>
             <p className="text-gray-600 text-sm mt-1">
               Sales, revenue, and inventory performance overview
