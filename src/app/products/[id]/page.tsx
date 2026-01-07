@@ -73,7 +73,7 @@ export default async function ProductDetailsPage({ params }: Props) {
           <div className="space-y-4">
             <div className="w-full h-64 relative border border-zinc-700 rounded-lg overflow-hidden">
               <Image
-                src={product.images?.[0] || "/profile.jpg"}
+                src={product.images?.[0] || "/image_1024.png"}
                 alt={product.name}
                 fill
                 className="object-cover"
